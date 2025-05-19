@@ -1,34 +1,40 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { nanoid } from "nanoid";
-import { useDispatch } from "react-redux";
-import { addContact } from "../../redux/contactsSlice";
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from '../../redux/contactsOps';
+import { selectContacts } from '../../redux/contactsSlice';
 
 const ContactForm = () => {
   const dispatch = useDispatch();
+  const contacts = useSelector(selectContacts);
+
   const initialValues = {
-    name: "",
-    number: "",
+    name: '',
+    number: '',
   };
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
-      .min(3, "Must be at least 3 characters")
-      .max(50, "Must be 50 characters or less")
-      .required("Required"),
+      .min(3, 'Must be at least 3 characters')
+      .max(50, 'Must be 50 characters or less')
+      .required('Required'),
     number: Yup.string()
-      .min(3, "Must be at least 3 characters")
-      .max(50, "Must be 50 characters or less")
-      .required("Required"),
+      .min(3, 'Must be at least 3 characters')
+      .max(50, 'Must be 50 characters or less')
+      .required('Required'),
   });
 
   const handleSubmit = (values, actions) => {
-    const contact = {
-      id: nanoid(),
-      name: values.name,
-      number: values.number,
-    };
-    dispatch(addContact(contact));
+    const nameExists = contacts.some(
+      contact => contact.name.toLowerCase() === values.name.toLowerCase()
+    );
+
+    if (nameExists) {
+      alert(`${values.name} is already in contacts`);
+      return;
+    }
+
+    dispatch(addContact(values));
     actions.resetForm();
   };
 

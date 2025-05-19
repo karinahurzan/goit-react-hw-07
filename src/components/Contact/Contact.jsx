@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { deleteContact } from "../../redux/contactsSlice";
+import { deleteContact } from "../../redux/contactsOps";
 
 export default function Contact({ name, number, id, icons }) {
   const dispatch = useDispatch();
@@ -8,14 +8,16 @@ export default function Contact({ name, number, id, icons }) {
     dispatch(deleteContact(id));
   };
 
+  const { IoMdContact, FaPhoneAlt } = icons || {};
+
   return (
     <div>
       <div>
         <h3>
-          <icons.IoMdContact /> {name}
+          {IoMdContact && <IoMdContact />} {name}
         </h3>
         <p>
-          <icons.FaPhoneAlt /> {number}
+          {FaPhoneAlt && <FaPhoneAlt />} {number}
         </p>
       </div>
       <button onClick={handleDelete} type="button">
